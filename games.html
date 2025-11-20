@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Games - Universal Network</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="apps.html">Apps</a></li>
+        <li><a href="games.html" class="active">Games</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="about.html">About</a></li>
+    </ul>
+</nav>
+
+<h1 class="title">Games</h1>
+
+<!-- Games list -->
+<div class="games-list">
+    <div class="game">
+        <h2>Game 1</h2>
+        <p>A fun adventure game to try out.</p>
+        <a href="game1.html">Play Now</a>
+    </div>
+    <div class="game">
+        <h2>Game 2</h2>
+        <p>An exciting puzzle game for everyone.</p>
+        <a href="game2.html">Play Now</a>
+    </div>
+    <div class="game">
+        <h2>Game 3</h2>
+        <p>Test your skills in this challenging game.</p>
+        <a href="game3.html">Play Now</a>
+    </div>
+</div>
+
+</body>
+</html>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background: radial-gradient(circle at center, #0f1624 20%, #070b12 80%);
+        color: white;
+    }
+
+    .navbar {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 25px 0;
+        position: absolute;
+        top: 0;
+        background-color: #111827;
+    }
+
+    .navbar ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .navbar ul li a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .navbar ul li a.active,
+    .navbar ul li a:hover {
+        text-decoration: underline;
+    }
+
+    .title {
+        text-align: center;
+        margin-top: 100px;
+        font-size: 36px;
+    }
+
+    .games-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        margin-top: 50px;
+    }
+
+    .game {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+        text-align: center;
+    }
+
+    .game h2 {
+        margin-top: 0;
+    }
+
+    .game a {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        background-color: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .game a:hover {
+        background-color: #2563eb;
+    }
