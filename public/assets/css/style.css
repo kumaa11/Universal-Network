@@ -129,3 +129,20 @@ body {
 .game a:hover {
   background-color: #2563eb;
 }
+#goBackBtn {
+  position: fixed;
+  top: -80px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #222;
+  color: white;
+  font-size: 40px;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 500;
+  transition: top 0.3s ease;
+}
+
