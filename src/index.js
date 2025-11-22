@@ -1,0 +1,141 @@
+import { createServer } from "node:http";
+import { join } from "node:path";
+import { hostname } from "node:os";
+import wisp from "wisp-server-node";
+import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
+import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.join(__dirname, "..", "public");
+const PORT = process.env.PORT || 8080;
+const HOST = process.env.HOST || "0.0.0.0";
+const NODE_ENV = process.env.NODE_ENV || "production";
+const fastify = Fastify({
+  serverFactory: (handler) => {
+    return createServer()
+      .on("request", (req, res) => {
+        res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+        res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+        handler(req, res);
+      })
+      .on("upgrade", (req, socket, head) => {
+        if (req.url.endsWith("/wisp/")) wisp.routeRequest(req, socket, head);
+        else socket.end();
+      });
+  },
+  logger: NODE_ENV === "development",
+});
+fastify.register(fastifyStatic, {
+  root: publicDir,
+  prefix: "/",
+  decorateReply: true,
+});
+
+fastify.get("/", (req, reply) => {
+  return reply.sendFile("index.html", publicDir);
+});
+
+fastify.get("/favicon-proxy", async (req, reply) => {
+  try {
+    const { url } = req.query;
+
+    if (!url) {
+      return reply.code(400).send({ error: "URL parameter is required" });
+    }
+
+    const validServices = [
+      "www.google.com/s2/favicons",
+      "icons.duckduckgo.com/ip3",
+      "favicons.githubusercontent.com",
+    ];
+
+    const urlObj = new URL(url);
+    const isValidService = validServices.some(
+      (service) =>
+        urlObj.hostname + urlObj.pathname.split("/")[1] ===
+          service.split("/")[0] || urlObj.href.includes(service)
+    );
+
+    if (!isValidService) {
+      return reply.code(403).send({ error: "Invalid favicon service" });
+    }
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Glint-Browser/1.0",
+        Accept: "image/*,*/*;q=0.8",
+      },
+      timeout: 5000,
+    });
+
+    if (!response.ok) {
+      return reply
+        .code(response.status)
+        .send({ error: "Failed to fetch favicon" });
+    }
+
+    const contentType = response.headers.get("content-type") || "image/x-icon";
+    const imageBuffer = await response.arrayBuffer();
+
+    reply.header("Content-Type", contentType);
+    reply.header("Cache-Control", "public, max-age=86400");
+    reply.header("Access-Control-Allow-Origin", "*");
+
+    return reply.send(Buffer.from(imageBuffer));
+  } catch (error) {
+    console.error("Favicon proxy error:", error);
+    return reply.code(500).send({ error: "Internal server error" });
+  }
+});
+
+fastify.register(fastifyStatic, {
+  root: epoxyPath,
+  prefix: "/epoxy/",
+  decorateReply: false,
+});
+
+fastify.register(fastifyStatic, {
+  root: baremuxPath,
+  prefix: "/baremux/",
+  decorateReply: false,
+});
+
+fastify.setErrorHandler((error, request, reply) => {
+  fastify.log.error(error);
+  reply.status(500).send({ error: "Internal Server Error" });
+});
+
+async function shutdown() {
+  try {
+    await fastify.close();
+    process.exit(0);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
+fastify.listen({ port: PORT, host: HOST }, (err) => {
+  if (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+
+  const address = fastify.server.address();
+  console.log(`Server running in ${NODE_ENV} mode`);
+  console.log(`Listening on:`);
+  console.log(`\thttp://localhost:${address.port}`);
+  console.log(`\thttp://${hostname()}:${address.port}`);
+  if (address.family === "IPv6") {
+    console.log(`\thttp://[${address.address}]:${address.port}`);
+  } else {
+    console.log(`\thttp://${address.address}:${address.port}`);
+  }
+});
