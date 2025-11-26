@@ -15,37 +15,62 @@
         <li><a href="about.html">About</a></li>
     </ul>
 </nav>
-
 <h1 class="title">Settings</h1>
 
-<div class="settings-content">
-    <p>Manage your preferences and account settings here.</p>
-    <ul>
-        <li><a href="#">Change Username</a></li>
-        <li><a href="#">Change Password</a></li>
-        <li><a href="#">Notification Preferences</a></li>
-        <li><a href="#">Privacy Settings</a></li>
-    </ul>
-</div>
 
+<div class="settings-modal">
+  <div class="section">
+    <h3>Theme</h3>
+    <div class="theme-options">
+      <button class="theme-option selected" data-theme="cyberpunk">
+        <span class="dot cyberpunk"></span>
+        Cyberpunk
+      </button>
+
+      <button class="theme-option" data-theme="matrix">
+        <span class="dot matrix"></span>
+        Matrix
+      </button>
+
+      <button class="theme-option" data-theme="sunset">
+        <span class="dot sunset"></span>
+        Sunset
+      </button>
+
+      <button class="theme-option" data-theme="ocean">
+        <span class="dot ocean"></span>
+        Ocean
+      </button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Visual Effects</h3>
+
+    <div class="toggle-row">
+      <span>Particle Effects (Coming soon)</span>
+      <label class="switch">
+        <input type="checkbox" checked disabled>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <span>Background Glow</span>
+      <label class="switch">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Panic Key</h3>
+    <input type="text" class="input-box" value="F">
+
+    <h3>Panic URL</h3>
+    <input type="text" class="input-box" placeholder="Enter URL…">
+  </div>
+</div>
 </body>
 </html>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        font-family: Arial, sans-serif;
-        background: radial-gradient(circle at center, #0f1624 20%, #070b12 80%);
-        color: white;
-    }
-
-    .navbar {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding: 25px 0;
-        position: absolute;
-        top: 0;
-        background-color: #111827;
-    }

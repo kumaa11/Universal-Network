@@ -52,11 +52,13 @@ body {
 }
 
 .title {
+  margin-top: 125px;
   font-size: 65px;
   font-weight: 800;
   color: #9e00ff;
   text-shadow: 0 0 20px #9e00ff, 0 0 40px #6b00cc;
   text-align: center;
+  
 }
 
 .subtitle {
